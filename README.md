@@ -1,25 +1,5 @@
 # MindBridge: Intelligent Token-Efficient Prompt Optimization for Large Language Models
 
-## Foundation (Phases 1-2)
-
-The initial backend is dependency-free and provides typed interfaces for language detection, intent analysis, requirement extraction, and pipeline composition. Prompt optimization, model training, LLM integration, and UI are intentionally out of scope for this phase.
-
-### Run the sample pipeline
-
-From the repository root:
-
-```text
-python Backend/main.py
-```
-
-### Run tests
-
-```text
-python -m unittest discover -s tests -v
-```
-
-The core package is in `mindbridge/`; the backend entry point is `Backend/main.py`. The `data/`, `models/`, and `scripts/` directories are reserved for later phases.
-
 # Project Overview
 
 An intelligent prompt optimization system designed to convert a user's natural-language requirements into clear, effective, and token-efficient prompts for Large Language Models (LLMs) such as ChatGPT, Claude, Gemini, and other AI models.
