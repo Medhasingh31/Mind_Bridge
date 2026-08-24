@@ -1,0 +1,4 @@
+pydantic
+langdetect
+python-dotenv
+pytest
