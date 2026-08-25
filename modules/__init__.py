@@ -1,5 +1,5 @@
 """MindBridge core package."""
 
-from .pipeline import PipelineResult, UserInput, run_pipeline
+from .pipeline import process_requirement
 
-__all__ = ["PipelineResult", "UserInput", "run_pipeline"]
+__all__ = ["process_requirement"]

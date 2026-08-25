@@ -1,26 +1,69 @@
-"""Intent analysis interfaces for MindBridge."""
+def detect_intent(text: str) -> str:
+    """
+    Detect the primary intent of the user's request.
+    """
 
-from dataclasses import dataclass
-import re
+    text_lower = text.lower()
 
+    intent_keywords = {
+        "code_generation": [
+            "code",
+            "program",
+            "python",
+            "javascript",
+            "function",
+            "script",
+            "website",
+            "app",
+        ],
+        "summarization": [
+            "summarize",
+            "summary",
+            "shorten",
+            "brief",
+            "संक्षेप",
+        ],
+        "translation": [
+            "translate",
+            "translation",
+            "convert language",
+            "अनुवाद",
+        ],
+        "explanation": [
+            "explain",
+            "explanation",
+            "meaning",
+            "how does",
+            "what is",
+        ],
+        "research": [
+            "research",
+            "study",
+            "paper",
+            "analyze",
+            "analysis",
+        ],
+        "writing": [
+            "write",
+            "essay",
+            "article",
+            "email",
+            "letter",
+        ],
+    }
 
-class IntentAnalysisError(ValueError):
-    """Raised when intent analysis receives invalid input."""
+    scores = {}
 
+    for intent, keywords in intent_keywords.items():
+        score = sum(
+            1 for keyword in keywords
+            if keyword in text_lower
+        )
 
-@dataclass(frozen=True)
-class Intent:
-    """The initial semantic intent of a user request."""
+        if score > 0:
+            scores[intent] = score
 
-    name: str
-    task: str
-    confidence: float
+    if not scores:
+        return "general_request"
 
-
-def analyze_intent(text: str) -> Intent:
-    """Create a deterministic baseline intent from a user request."""
-    if not isinstance(text, str) or not text.strip():
-        raise IntentAnalysisError("User input must be a non-empty string.")
-
-    task = re.split(r"[.!?\n]+", text.strip(), maxsplit=1)[0].strip()
-    return Intent(name="general_request", task=task, confidence=0.50)
+    return max(scores, key=scores.get)

@@ -1,13 +1,37 @@
-"""Command-line entry point for the MindBridge foundation."""
-
-from modules import PipelineResult, UserInput, run_pipeline
+from modules.pipeline import process_requirement
 
 
-def process_request(text: str, context: str | None = None) -> PipelineResult:
-    """Process one user request through the core pipeline."""
-    return run_pipeline(UserInput(text=text, context=context))
+def main():
+    print("=== MindBridge ===")
+
+    user_input = input("\nEnter your requirement:\n> ")
+
+    try:
+        result = process_requirement(user_input)
+
+        print("\n--- Structured Requirement ---")
+        print(f"Language: {result.language}")
+        print(f"Intent: {result.intent}")
+        print(f"Task: {result.task}")
+        print(f"Context: {result.context}")
+
+        print("\nRequirements:")
+        for item in result.requirements:
+            print(f"- {item}")
+
+        print("\nConstraints:")
+        for item in result.constraints:
+            print(f"- {item}")
+
+        print(f"\nExpected Output: {result.expected_output}")
+
+        print("\nEntities:")
+        for entity in result.entities:
+            print(f"- {entity}")
+
+    except ValueError as error:
+        print(f"Error: {error}")
 
 
 if __name__ == "__main__":
-    result = process_request("Create a concise project summary. Output it as bullet points.")
-    print(result)
+    main()

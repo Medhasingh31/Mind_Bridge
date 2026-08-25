@@ -1,32 +1,71 @@
-"""Language detection interfaces for MindBridge."""
-
-from dataclasses import dataclass
+from langdetect import detect, LangDetectException
 
 
-class LanguageDetectionError(ValueError):
-    """Raised when language detection receives invalid input."""
+def detect_language(text: str) -> str:
+    """
+    Detect the language of the user input.
+
+    Returns:
+        English, Hindi, or Hinglish
+    """
+
+    if not text or not text.strip():
+        return "unknown"
+
+    try:
+        detected = detect(text)
+
+        if detected == "en":
+            return "English"
+
+        if detected == "hi":
+            return "Hindi"
+
+        return detected
+
+    except LangDetectException:
+        return "unknown"
 
 
-@dataclass(frozen=True)
-class DetectedLanguage:
-    """Language information produced from user input."""
+def detect_hinglish(text: str) -> bool:
+    """
+    Basic Hinglish detection.
 
-    code: str
-    name: str
-    confidence: float
-    is_mixed: bool = False
+    This is an initial heuristic and will be improved
+    in later phases.
+    """
+
+    hinglish_words = {
+        "mujhe",
+        "hai",
+        "chahiye",
+        "karo",
+        "karna",
+        "kaise",
+        "mera",
+        "meri",
+        "ye",
+        "woh",
+        "aur",
+        "mein",
+        "ke",
+        "ko",
+        "se",
+        "bana",
+        "banana",
+    }
+
+    words = set(text.lower().split())
+
+    return len(words.intersection(hinglish_words)) >= 2
 
 
-def detect_language(text: str) -> DetectedLanguage:
-    """Return a lightweight language estimate without external services."""
-    if not isinstance(text, str) or not text.strip():
-        raise LanguageDetectionError("User input must be a non-empty string.")
+def get_language(text: str) -> str:
+    """
+    Detect English, Hindi, or basic Hinglish.
+    """
 
-    devanagari = sum("\u0900" <= character <= "\u097f" for character in text)
-    latin = sum(character.isascii() and character.isalpha() for character in text)
+    if detect_hinglish(text):
+        return "Hinglish"
 
-    if devanagari and latin:
-        return DetectedLanguage("hi-en", "Hindi-English", 0.70, is_mixed=True)
-    if devanagari:
-        return DetectedLanguage("hi", "Hindi", 0.90)
-    return DetectedLanguage("en", "English", 0.75)
+    return detect_language(text)
