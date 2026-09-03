@@ -18,3 +18,7 @@ class StructuredRequirement(BaseModel):
     expected_output: Optional[str] = None
 
     entities: List[str] = Field(default_factory=list)
+
+    missing_information: List[str] = Field(default_factory=list)
+
+    confidence: Optional[float] = None
